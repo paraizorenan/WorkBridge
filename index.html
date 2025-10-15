@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBridge - Página de Teste</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .status {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 WorkBridge</h1>
+            <p class="subtitle">Conectando talentos e oportunidades</p>
+        </header>
+
+        <div class="card">
+            <div class="status">✅ Página de teste funcionando!</div>
+            <h2>Bem-vindo ao WorkBridge</h2>
+            <p>Esta é uma página HTML de teste criada para demonstrar a funcionalidade do repositório. O WorkBridge é uma plataforma inovadora que conecta profissionais talentosos com as melhores oportunidades de trabalho.</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="btn" onclick="showMessage()">Testar Interatividade</button>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="card feature">
+                <div class="feature-icon">💼</div>
+                <h3>Oportunidades</h3>
+                <p>Encontre as melhores vagas de emprego em empresas de destaque no mercado.</p>
+            </div>
+
+            <div class="card feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Match Inteligente</h3>
+                <p>Nossa IA conecta você com oportunidades que realmente fazem sentido para sua carreira.</p>
+            </div>
+
+            <div class="card feature">
+                <div class="feature-icon">📈</div>
+                <h3>Crescimento</h3>
+                <p>Acompanhe seu progresso e desenvolva suas habilidades com nossos recursos exclusivos.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Informações Técnicas</h2>
+            <ul style="margin: 20px 0; padding-left: 20px;">
+                <li><strong>Repositório:</strong> <a href="https://github.com/paraizorenan/WorkBridge.git" target="_blank">WorkBridge</a></li>
+                <li><strong>Data de criação:</strong> <span id="currentDate"></span></li>
+                <li><strong>Status:</strong> Página de teste ativa</li>
+                <li><strong>Tecnologias:</strong> HTML5, CSS3, JavaScript</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 WorkBridge. Página de teste criada com sucesso! 🎉</p>
+        </footer>
+    </div>
+
+    <script>
+        // Atualizar data atual
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('pt-BR');
+        
+        // Função para testar interatividade
+        function showMessage() {
+            alert('🎉 Funcionalidade JavaScript funcionando perfeitamente!\n\nEsta página está pronta para ser desenvolvida!');
+        }
+
+        // Adicionar efeito de digitação no título
+        const title = document.querySelector('h1');
+        const originalText = title.textContent;
+        title.textContent = '';
+        
+        let i = 0;
+        const typeWriter = () => {
+            if (i < originalText.length) {
+                title.textContent += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        };
+        
+        // Iniciar efeito após carregar a página
+        setTimeout(typeWriter, 500);
+    </script>
+</body>
+</html>
