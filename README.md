@@ -1,23 +1,28 @@
 # 🚀 WorkBridge - Plataforma de Conectividade Profissional
 
-WorkBridge é uma plataforma inovadora que conecta profissionais talentosos com as melhores oportunidades de trabalho, oferecendo um sistema completo de matchmaking entre candidatos e empresas.
+WorkBridge é uma plataforma inovadora que conecta contratantes com profissionais especializados em construção e serviços, oferecendo um sistema completo de solicitação de orçamentos, propostas e gestão de projetos.
 
 ## 📋 Funcionalidades
 
-- **👥 Gestão de Usuários**: Cadastro e perfil completo de profissionais
-- **🏢 Gestão de Empresas**: Cadastro de empresas e suas informações
-- **💼 Sistema de Vagas**: Publicação e busca de oportunidades de trabalho
-- **📝 Candidaturas**: Sistema completo de aplicação para vagas
-- **⭐ Favoritos**: Usuários podem favoritar vagas de interesse
-- **💬 Sistema de Mensagens**: Chat entre candidatos e recrutadores
-- **🔍 Busca Inteligente**: Filtros avançados para encontrar oportunidades ideais
+- **👥 Gestão de Usuários**: Cadastro de contratantes e profissionais especializados
+- **🏗️ Especialidades**: Sistema de categorização por área de atuação (Alvenaria, Hidráulica, Elétrica, etc.)
+- **📍 Localização**: Gestão de UFs, cidades e áreas de atendimento
+- **💰 Solicitações de Orçamento**: Sistema completo de solicitação e gestão de orçamentos
+- **📝 Propostas**: Envio e gestão de propostas pelos profissionais
+- **🔨 Jobs**: Gestão completa de projetos contratados
+- **💬 Chat**: Sistema de mensagens entre contratantes e profissionais
+- **⭐ Avaliações**: Sistema bilateral de avaliações e reviews
+- **💳 Pagamentos**: Sistema de pagamentos com escrow e carteira digital
+- **📊 Portfolio**: Galeria de trabalhos realizados pelos profissionais
 
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend
 - **Node.js** - Runtime JavaScript
 - **Express.js** - Framework web
-- **PostgreSQL** - Banco de dados relacional
+- **PostgreSQL** - Banco de dados relacional com schema otimizado
+- **pgcrypto** - Extensão para UUIDs e criptografia
+- **citext** - Extensão para emails case-insensitive
 - **CORS** - Middleware para requisições cross-origin
 - **dotenv** - Gerenciamento de variáveis de ambiente
 
@@ -96,49 +101,88 @@ npm start
 ### Endpoints Principais
 
 #### Usuários
-- `GET /api/users` - Lista todos os usuários
-- `POST /api/users` - Cria um novo usuário
-- `GET /api/users/:id` - Busca usuário por ID
-- `PUT /api/users/:id` - Atualiza usuário
-- `DELETE /api/users/:id` - Remove usuário
+- `GET /api/usuarios` - Lista todos os usuários (contratantes e profissionais)
+- `POST /api/usuarios` - Cria um novo usuário
+- `GET /api/usuarios/:id` - Busca usuário por ID
 
-#### Vagas
-- `GET /api/jobs` - Lista todas as vagas
-- `POST /api/jobs` - Cria uma nova vaga
-- `GET /api/jobs/:id` - Busca vaga por ID
-- `PUT /api/jobs/:id` - Atualiza vaga
-- `DELETE /api/jobs/:id` - Remove vaga
+#### Profissionais
+- `GET /api/profissionais` - Lista profissionais com filtros
+- `GET /api/profissionais/:id` - Busca profissional por ID com detalhes completos
+- `POST /api/profissionais/:id/especialidades` - Adiciona especialidade ao profissional
+- `POST /api/profissionais/:id/cidades` - Adiciona cidade de atendimento
+- `POST /api/profissionais/:id/portfolio` - Adiciona item ao portfolio
 
-#### Candidaturas
-- `GET /api/applications` - Lista candidaturas
-- `POST /api/applications` - Cria nova candidatura
-- `GET /api/applications/:id` - Busca candidatura por ID
-- `PUT /api/applications/:id` - Atualiza status da candidatura
+#### Suporte
+- `GET /api/ufs` - Lista todas as UFs
+- `GET /api/cidades/:uf` - Lista cidades por UF
+- `GET /api/especialidades` - Lista todas as especialidades
+
+#### Solicitações de Orçamento
+- `GET /api/solicitacoes-orcamento` - Lista solicitações com filtros
+- `POST /api/solicitacoes-orcamento` - Cria nova solicitação de orçamento
+
+#### Propostas
+- `GET /api/propostas` - Lista propostas com filtros
+- `POST /api/propostas` - Cria nova proposta
+- `PUT /api/propostas/:id/aceitar` - Aceita uma proposta
+
+#### Jobs
+- `GET /api/jobs` - Lista jobs com filtros
+
+#### Chat
+- `POST /api/conversas` - Cria nova conversa
+- `POST /api/mensagens` - Envia mensagem
+- `GET /api/conversas/:id/mensagens` - Lista mensagens da conversa
+
+#### Avaliações
+- `POST /api/avaliacoes/profissional` - Avalia profissional
+- `POST /api/avaliacoes/contratante` - Avalia contratante
 
 ### Exemplo de Uso da API
 
-#### Criar um usuário:
+#### Criar um profissional:
 ```bash
-curl -X POST http://localhost:3000/api/users \
+curl -X POST http://localhost:3000/api/usuarios \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "João Silva",
+    "nome_completo": "João Silva",
+    "tipo": "PROFISSIONAL",
+    "cpf_cnpj": "123.456.789-00",
     "email": "joao@email.com",
-    "profession": "Desenvolvedor Full Stack",
-    "location": "São Paulo, SP"
+    "telefone": "(11) 99999-9999",
+    "cidade_id": "uuid-da-cidade",
+    "aceitou_termos_em": "2025-01-22T15:30:00.000Z",
+    "aceitou_privacidade_em": "2025-01-22T15:30:00.000Z"
   }'
 ```
 
-#### Criar uma vaga:
+#### Criar uma solicitação de orçamento:
 ```bash
-curl -X POST http://localhost:3000/api/jobs \
+curl -X POST http://localhost:3000/api/solicitacoes-orcamento \
   -H "Content-Type: application/json" \
   -d '{
-    "title": "Desenvolvedor React Senior",
-    "description": "Procuramos desenvolvedor React com experiência em projetos grandes",
-    "company": "TechCorp Brasil",
-    "location": "São Paulo, SP",
-    "salary": "8000-12000"
+    "contratante_id": "uuid-do-contratante",
+    "profissional_id": "uuid-do-profissional",
+    "titulo": "Reforma do banheiro",
+    "descricao": "Preciso reformar o banheiro completo com novo piso e azulejos",
+    "cidade_id": "uuid-da-cidade",
+    "data_desejada_ini": "2025-02-01"
+  }'
+```
+
+#### Enviar uma proposta:
+```bash
+curl -X POST http://localhost:3000/api/propostas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "solicitacao_id": "uuid-da-solicitacao",
+    "profissional_id": "uuid-do-profissional",
+    "valor_mao_obra_cents": 500000,
+    "valor_material_cents": 300000,
+    "data_inicio_prevista": "2025-02-01",
+    "data_fim_prevista": "2025-02-15",
+    "validade_ate": "2025-01-30",
+    "mensagem": "Posso realizar o trabalho conforme solicitado..."
   }'
 ```
 
@@ -147,15 +191,23 @@ curl -X POST http://localhost:3000/api/jobs \
 ```
 WorkBridge/
 ├── src/
-│   └── server.js          # Servidor principal
+│   └── server.js          # Servidor principal Express.js v2.0
 ├── database/
-│   └── schema.sql         # Script de inicialização do banco
-├── public/                # Arquivos estáticos (se necessário)
-├── index.html             # Frontend principal
+│   └── schema.sql         # Schema PostgreSQL completo com regras de negócio
+├── public/                # Arquivos estáticos do frontend
+│   └── index.html         # Frontend principal
+├── css/                   # Estilos CSS
+│   └── style.css          # Estilos adicionais
+├── js/                    # Scripts JavaScript
+│   └── script.js          # JavaScript adicional
+├── cadastro.html          # Página de cadastro
 ├── package.json           # Dependências e scripts
-├── .gitignore            # Arquivos ignorados pelo Git
-├── env.example           # Exemplo de variáveis de ambiente
-└── README.md             # Este arquivo
+├── README.md              # Documentação principal
+├── DOCUMENTATION.md       # Documentação técnica completa
+├── GUIDE.md               # Guia prático de uso
+├── API.md                 # Documentação da API
+├── .gitignore             # Arquivos ignorados pelo Git
+└── config.example         # Exemplo de configuração
 ```
 
 ## 🔧 Scripts Disponíveis
@@ -200,13 +252,15 @@ Para suporte, envie um email para [seu-email@exemplo.com] ou abra uma issue no G
 ## 🎯 Roadmap
 
 - [ ] Sistema de autenticação com JWT
-- [ ] Upload de currículos e documentos
-- [ ] Sistema de notificações por email
-- [ ] Dashboard administrativo
-- [ ] API de integração com LinkedIn
-- [ ] Sistema de avaliações e reviews
-- [ ] Chat em tempo real com WebSocket
+- [ ] Upload de fotos e documentos
+- [ ] Sistema de notificações por email e push
+- [ ] Dashboard administrativo completo
+- [ ] Sistema de pagamentos integrado (Stripe/Mercado Pago)
 - [ ] Aplicativo mobile (React Native)
+- [ ] Sistema de geolocalização para busca por proximidade
+- [ ] Chat em tempo real com WebSocket
+- [ ] Sistema de garantia e seguro
+- [ ] Relatórios e analytics avançados
 
 ---
 

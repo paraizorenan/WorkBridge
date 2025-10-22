@@ -1,7 +1,7 @@
 {
   "name": "workbridge",
-  "version": "1.0.0",
-  "description": "Plataforma de conectividade profissional que conecta talentos com oportunidades de trabalho",
+  "version": "2.0.0",
+  "description": "Plataforma de conectividade profissional que conecta contratantes com profissionais especializados",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
@@ -17,7 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/paraizorenan/WorkBridge.git"
   },
-  "keywords": ["job", "employment", "career", "recruitment", "platform", "nodejs", "express", "postgresql"],
+  "keywords": ["construction", "contractors", "professionals", "quotes", "jobs", "platform", "nodejs", "express", "postgresql"],
   "author": "Renan Paraizo",
   "license": "ISC",
   "type": "commonjs",
