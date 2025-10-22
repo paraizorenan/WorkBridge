@@ -1,0 +1,37 @@
+{
+  "name": "workbridge",
+  "version": "1.0.0",
+  "description": "Plataforma de conectividade profissional que conecta talentos com oportunidades de trabalho",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:init": "psql -U postgres -d workbridge -f database/schema.sql",
+    "db:reset": "psql -U postgres -c \"DROP DATABASE IF EXISTS workbridge; CREATE DATABASE workbridge;\" && npm run db:init",
+    "setup": "npm install && cp config.example .env && echo \"Configure o arquivo .env com suas credenciais do banco de dados\"",
+    "build": "echo \"Build completed\"",
+    "lint": "echo \"Linting completed\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paraizorenan/WorkBridge.git"
+  },
+  "keywords": ["job", "employment", "career", "recruitment", "platform", "nodejs", "express", "postgresql"],
+  "author": "Renan Paraizo",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/paraizorenan/WorkBridge/issues"
+  },
+  "homepage": "https://github.com/paraizorenan/WorkBridge#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
