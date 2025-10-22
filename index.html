@@ -3,137 +3,479 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Work Bridge - Plataforma que conecta contratantes e profissionais da construção civil">
-    <meta name="keywords" content="construção civil, profissionais, contratação, trabalho">
-    <meta name="author" content="Work Bridge">
-    
-    <title>Login - Work Bridge | Conectando talentos e oportunidades</title>
-    
-    <!-- Google Fonts - Poppins -->
+    <title>WorkBridge Obras - Mestres de Obra e Pedreiros</title>
+    <meta name="description" content="Contrate Mestres de Obras e Pedreiros confiáveis. Compare perfis, veja avaliações, receba orçamentos e acompanhe sua obra em um só lugar.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome para ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <!-- CSS Principal -->
-    <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Favicon (opcional - adicionar depois) -->
-    <!-- <link rel="icon" type="image/png" href="assets/favicon.png"> -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0223;           /* Roxo profundo (inspirado no Nubank) */
+            --bg-soft: #13073a;
+            --primary: #8a2be2;      /* Roxo vívido */
+            --primary-2: #b06fff;    /* Roxo claro */
+            --accent: #22d3ee;       /* Ciano para detalhes */
+            --text: #f5f7fb;
+            --muted: #c6c6d1;
+            --card: rgba(255,255,255,0.06);
+            --stroke: rgba(255,255,255,0.12);
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: radial-gradient(1200px 600px at 80% -50%, #3b0fff33, transparent 60%),
+                        radial-gradient(900px 500px at -10% 20%, #00eaff1a, transparent 60%),
+                        linear-gradient(160deg, var(--bg) 0%, #120733 60%, #0b0223 100%);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        .container { width: min(1200px, 92%); margin: 0 auto; }
+
+        /* Header */
+        .nav {
+            position: sticky; top: 0; z-index: 1000;
+            backdrop-filter: saturate(140%) blur(10px);
+            background: linear-gradient(to bottom, rgba(10, 2, 30, 0.85), rgba(10, 2, 30, 0.35));
+            border-bottom: 1px solid var(--stroke);
+        }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .3px; }
+        .logo {
+            width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+            background: conic-gradient(from 210deg at 50% 50%, #8a2be2, #b06fff, #22d3ee, #8a2be2);
+            box-shadow: 0 8px 28px #8a2be233, inset 0 0 24px #ffffff22;
+        }
+        .nav-links { display: flex; align-items: center; gap: 24px; font-weight: 600; color: var(--muted); }
+        .nav-links a { padding: 10px 12px; border-radius: 10px; transition: 200ms ease; }
+        .nav-links a:hover { color: var(--text); background: var(--card); }
+        .nav-cta { display: flex; align-items: center; gap: 12px; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            height: 44px; padding: 0 18px; border-radius: 14px; border: 1px solid var(--stroke);
+            color: var(--text); font-weight: 700; letter-spacing: .3px; cursor: pointer;
+            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px #00000055; border-color: #ffffff2e; }
+        .btn.primary {
+            background: linear-gradient(135deg, #8a2be2, #b06fff);
+            border-color: transparent; box-shadow: 0 10px 28px #8a2be244;
+        }
+        .btn.primary:hover { box-shadow: 0 14px 36px #8a2be266; }
+
+        .hamburger { display: none; width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--stroke); background: #ffffff10; }
+
+        /* Hero */
+        .hero { padding: 72px 0 36px; }
+        .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: center; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); font-weight: 700; letter-spacing: .3px; background: #22d3ee1a; border: 1px solid #22d3ee33; padding: 8px 12px; border-radius: 999px; }
+        .title { font-size: clamp(2rem, 4vw + 1rem, 56px); line-height: 1.05; font-weight: 800; margin: 16px 0 12px; }
+        .subtitle { font-size: clamp(1rem, .9vw + .6rem, 18px); color: var(--muted); }
+        .hero-cta { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+        .trust { display: flex; align-items: center; gap: 12px; margin-top: 18px; color: var(--muted); font-size: 14px; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: #16a34a1a; color: #34d399; border: 1px solid #22c55e33; font-weight: 700; }
+
+        .hero-card {
+            background:
+                radial-gradient(300px 140px at 20% 0%, #8a2be266, transparent 70%),
+                radial-gradient(260px 200px at 100% 100%, #22d3ee1f, transparent 60%),
+                linear-gradient(160deg, #ffffff1a, #ffffff0a);
+            border: 1px solid var(--stroke);
+            border-radius: 20px; padding: 18px; position: relative; overflow: hidden;
+            box-shadow: 0 20px 60px #00000066, inset 0 0 0 1px #ffffff10;
+        }
+        .hero-card .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .input {
+            background: #0d0623; border: 1px solid var(--stroke); height: 52px; border-radius: 14px; padding: 0 14px;
+            color: var(--text); width: 100%; font-weight: 600; letter-spacing: .2px;
+        }
+        .helper { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+        /* Features */
+        .section { padding: 56px 0; }
+        .section .heading { font-size: 28px; font-weight: 800; margin-bottom: 18px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .card {
+            background: var(--card); border: 1px solid var(--stroke); border-radius: 18px; padding: 18px; height: 100%;
+        }
+        .card h3 { font-size: 18px; margin-bottom: 8px; }
+        .card p { color: var(--muted); }
+
+        .icon {
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, #ffffff33, #ffffff10);
+            border: 1px solid var(--stroke); display: grid; place-items: center; margin-bottom: 10px;
+        }
+
+        /* Services */
+        .service-item { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; padding: 14px; border: 1px dashed var(--stroke); border-radius: 16px; }
+        .service-item strong { font-size: 16px; }
+        .tag { font-size: 12px; color: var(--accent); background: #22d3ee1a; border: 1px solid #22d3ee33; padding: 4px 8px; border-radius: 999px; }
+
+        /* Testimonials */
+        .testimonials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .quote { background: var(--card); border: 1px solid var(--stroke); border-radius: 18px; padding: 18px; }
+        .quote p { color: var(--muted); margin-top: 8px; }
+
+        /* FAQ */
+        .faq { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .faq-item { background: var(--card); border: 1px solid var(--stroke); border-radius: 14px; }
+        .faq-q { display: flex; justify-content: space-between; align-items: center; padding: 14px; cursor: pointer; font-weight: 700; }
+        .faq-a { padding: 0 14px 14px; color: var(--muted); display: none; }
+
+        /* Footer */
+        footer { border-top: 1px solid var(--stroke); padding: 36px 0; color: var(--muted); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 18px; }
+        .tiny { font-size: 12px; color: #9aa0ad; }
+
+        /* Utilities */
+        .sp-8 { height: 8px; }
+        .sp-12 { height: 12px; }
+        .sp-18 { height: 18px; }
+        .sp-24 { height: 24px; }
+        .sp-32 { height: 32px; }
+        .sp-48 { height: 48px; }
+
+        /* Responsive */
+        @media (max-width: 980px) {
+            .nav-links { display: none; }
+            .hamburger { display: inline-grid; place-items: center; }
+            .hero-grid { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .testimonials { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 560px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .btn { height: 48px; border-radius: 16px; }
+        }
+    </style>
 </head>
 <body>
-    
-    <!-- Container Principal do Login -->
-    <div class="login-container">
-        
-        <!-- Cabeçalho com Logo -->
-        <header class="login-header">
-            <div class="logo">
-                <i class="fas fa-hard-hat logo-icon"></i>
-                <h1>Work Bridge</h1>
+    <header class="nav">
+        <div class="container nav-inner">
+            <a href="#" class="brand">
+                <span class="logo" aria-hidden="true"></span>
+                <span>WorkBridge Obras</span>
+            </a>
+            <nav class="nav-links" aria-label="Navegação principal">
+                <a href="#servicos">Serviços</a>
+                <a href="#profissionais">Profissionais</a>
+                <a href="#seguranca">Segurança</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <div class="nav-cta">
+                <button class="btn" id="btnLogin">Entrar</button>
+                <button class="btn primary" id="btnCadastrar">Quero contratar</button>
+                <button class="hamburger" id="btnMenu" aria-label="Abrir menu">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6H21" stroke="#EAEAF0" stroke-width="2" stroke-linecap="round"/><path d="M3 12H21" stroke="#EAEAF0" stroke-width="2" stroke-linecap="round"/><path d="M3 18H21" stroke="#EAEAF0" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
             </div>
-            <p class="logo-subtitle">Conectando talentos e oportunidades</p>
-        </header>
-        
-        <!-- Formulário de Login -->
-        <form id="loginForm" class="login-form" novalidate>
-            
-            <!-- Campo de E-mail -->
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        class="form-control" 
-                        placeholder="seu@email.com"
-                        autocomplete="email"
-                        required
-                    >
-                </div>
-                <span class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span class="error-text"></span>
-                </span>
-            </div>
-            
-            <!-- Campo de Senha -->
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        class="form-control" 
-                        placeholder="Digite sua senha"
-                        autocomplete="current-password"
-                        required
-                    >
-                </div>
-                <span class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span class="error-text"></span>
-                </span>
-            </div>
-            
-            <!-- Opções: Lembrar-me e Esqueci Senha -->
-            <div class="form-options">
-                <div class="remember-me">
-                    <input type="checkbox" id="rememberMe" name="rememberMe">
-                    <label for="rememberMe">Lembrar-me</label>
-                </div>
-                <a href="#" class="forgot-password">Esqueci minha senha</a>
-            </div>
-            
-            <!-- Botão de Login -->
-            <button type="submit" id="loginBtn" class="btn btn-primary">
-                <span class="btn-spinner"></span>
-                <span class="btn-text">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Entrar
-                </span>
-            </button>
-            
-        </form>
-        
-        <!-- Divisor -->
-        <div class="divider">
-            <span>ou continue com</span>
         </div>
-        
-        <!-- Login Social -->
-        <div class="social-login">
-            <button type="button" id="googleBtn" class="btn-social btn-google">
-                <i class="fab fa-google"></i>
-                <span>Google</span>
-            </button>
-            <button type="button" id="facebookBtn" class="btn-social btn-facebook">
-                <i class="fab fa-facebook-f"></i>
-                <span>Facebook</span>
-            </button>
+    </header>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container hero-grid">
+                <div>
+                    <span class="eyebrow">Construção sem dor de cabeça</span>
+                    <h1 class="title">Contrate Mestres de Obras e Pedreiros confiáveis, em minutos.</h1>
+                    <p class="subtitle">Compare perfis verificados, veja avaliações reais e receba orçamentos transparentes. Do pequeno reparo à reforma completa, encontre o profissional certo para sua obra.</p>
+                    <div class="hero-cta">
+                        <a href="#servicos" class="btn primary">Explorar serviços</a>
+                        <a href="#profissionais" class="btn">Ver profissionais</a>
+                    </div>
+                    <div class="trust">
+                        <span class="badge">✓ Verificados</span>
+                        <span>Pagamento protegido</span>
+                        <span>Atendimento 7 dias</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="hero-card" role="form" aria-label="Solicite seu orçamento">
+                        <div class="sp-8"></div>
+                        <div class="row">
+                            <input class="input" id="inputNome" placeholder="Seu nome" autocomplete="name">
+                            <input class="input" id="inputCidade" placeholder="Cidade" autocomplete="address-level2">
+                        </div>
+                        <div class="sp-12"></div>
+                        <div class="row">
+                            <input class="input" id="inputServico" placeholder="Tipo de serviço (ex.: Alvenaria)">
+                            <input class="input" id="inputQuando" placeholder="Quando precisa (ex.: Próximas 2 semanas)">
+                        </div>
+                        <div class="sp-12"></div>
+                        <div class="row">
+                            <input class="input" id="inputContato" placeholder="WhatsApp ou Email" autocomplete="tel">
+                            <button class="btn primary" id="btnOrcamento">Receber orçamento</button>
+                        </div>
+                        <div class="sp-8"></div>
+                        <p class="helper">Ao continuar, você concorda com nossos termos e política de privacidade.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefícios / Features -->
+        <section class="section" id="servicos">
+            <div class="container">
+                <h2 class="heading">Por que escolher a WorkBridge</h2>
+                <div class="grid-3">
+                    <article class="card">
+                        <div class="icon">🔒</div>
+                        <h3>Pagamento protegido</h3>
+                        <p>Seu dinheiro só é liberado após a conclusão do serviço conforme combinado.</p>
+                    </article>
+                    <article class="card">
+                        <div class="icon">⭐</div>
+                        <h3>Profissionais verificados</h3>
+                        <p>Documentos validados, histórico e avaliações públicas para você contratar com segurança.</p>
+                    </article>
+                    <article class="card">
+                        <div class="icon">⚡</div>
+                        <h3>Orçamento em minutos</h3>
+                        <p>Descreva sua demanda e receba propostas claras e comparáveis rapidamente.</p>
+                    </article>
+                </div>
+                <div class="sp-24"></div>
+                <div class="grid-3">
+                    <div class="service-item">
+                        <div class="icon">🧱</div>
+                        <div>
+                            <strong>Alvenaria e estrutura</strong>
+                            <div class="tiny">Reformas, ampliações e reparos estruturais</div>
+                        </div>
+                        <span class="tag">A partir de R$</span>
+                    </div>
+                    <div class="service-item">
+                        <div class="icon">🪚</div>
+                        <div>
+                            <strong>Acabamento e revestimentos</strong>
+                            <div class="tiny">Assentamento, rejunte, gesso e pintura</div>
+                        </div>
+                        <span class="tag">Agende hoje</span>
+                    </div>
+                    <div class="service-item">
+                        <div class="icon">🚿</div>
+                        <div>
+                            <strong>Hidráulica e elétrica</strong>
+                            <div class="tiny">Instalações, manutenção e correções</div>
+                        </div>
+                        <span class="tag">Emergencial</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profissionais / Destaques -->
+        <section class="section" id="profissionais">
+            <div class="container">
+                <h2 class="heading">Profissionais em destaque</h2>
+                <div class="grid-3">
+                    <article class="card">
+                        <div class="icon">👷</div>
+                        <h3>João Silva • Mestre de Obras</h3>
+                        <p>+120 obras entregues • 4,9/5 • São Paulo - SP</p>
+                    </article>
+                    <article class="card">
+                        <div class="icon">👷‍♂️</div>
+                        <h3>Marcos Pereira • Pedreiro</h3>
+                        <p>Reformas rápidas • 4,8/5 • Rio de Janeiro - RJ</p>
+                    </article>
+                    <article class="card">
+                        <div class="icon">👷‍♀️</div>
+                        <h3>Ana Souza • Encarregada</h3>
+                        <p>Acabamentos premium • 4,9/5 • Belo Horizonte - MG</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Segurança / Garantias -->
+        <section class="section" id="seguranca">
+            <div class="container">
+                <h2 class="heading">Segurança e confiança desde o primeiro contato</h2>
+                <div class="grid-3">
+                    <article class="card">
+                        <div class="icon">🛡️</div>
+                        <h3>Garantia WorkBridge</h3>
+                        <p>Suporte dedicado e resolução de disputas caso algo não saia como esperado.</p>
+                    </article>
+                    <article class="card">
+                        <div class="icon">📄</div>
+                        <h3>Contrato digital</h3>
+                        <p>Escopo, prazos e pagamentos formalizados de forma simples e transparente.</p>
+                    </article>
+                    <article class="card">
+                        <div class="icon">🔍</div>
+                        <h3>Transparência total</h3>
+                        <p>Timeline da obra, fotos e checklists para você acompanhar tudo do seu celular.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Depoimentos -->
+        <section class="section">
+            <div class="container">
+                <h2 class="heading">Quem já construiu com a gente</h2>
+                <div class="testimonials">
+                    <div class="quote">
+                        <strong>“Obra sem estresse! Recebi três propostas e escolhi a melhor.”</strong>
+                        <p>— Carla M., reforma de apartamento em Curitiba</p>
+                    </div>
+                    <div class="quote">
+                        <strong>“Profissional pontual e orçamento honesto. Recomendo.”</strong>
+                        <p>— Felipe T., troca de revestimentos em São Paulo</p>
+                    </div>
+                    <div class="quote">
+                        <strong>“O pagamento protegido me deu segurança do começo ao fim.”</strong>
+                        <p>— Luciana A., ampliação de área gourmet em BH</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="section" id="faq">
+            <div class="container">
+                <h2 class="heading">Perguntas frequentes</h2>
+                <div class="faq">
+                    <div class="faq-item">
+                        <div class="faq-q">Como funciona o pagamento protegido? <span>+</span></div>
+                        <div class="faq-a">O valor fica reservado e só é liberado ao profissional após a entrega conforme o combinado.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-q">Os profissionais são verificados? <span>+</span></div>
+                        <div class="faq-a">Sim. Validamos documentos, checamos referências e exibimos avaliações públicas.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-q">Consigo acompanhar a obra pelo app? <span>+</span></div>
+                        <div class="faq-a">Você recebe atualizações, fotos e checklists direto no seu celular.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-grid">
+            <div>
+                <div class="brand"><span class="logo"></span><strong>WorkBridge Obras</strong></div>
+                <div class="sp-12"></div>
+                <div class="tiny">Marketplace para contratação de Mestres de Obras e equipes de construção.</div>
+                <div class="sp-12"></div>
+                <div class="tiny">© <span id="year"></span> WorkBridge. Todos os direitos reservados.</div>
+            </div>
+            <div>
+                <strong>Plataforma</strong>
+                <div class="sp-8"></div>
+                <ul class="tiny">
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li><a href="#profissionais">Profissionais</a></li>
+                    <li><a href="#seguranca">Segurança</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <strong>Institucional</strong>
+                <div class="sp-8"></div>
+                <ul class="tiny">
+                    <li><a href="https://github.com/paraizorenan/WorkBridge.git" target="_blank" rel="noopener">Repositório</a></li>
+                    <li><a href="#">Termos de uso</a></li>
+                    <li><a href="#">Privacidade</a></li>
+                </ul>
+            </div>
+            <div>
+                <strong>Contato</strong>
+                <div class="sp-8"></div>
+                <ul class="tiny">
+                    <li><a href="#">Whatsapp</a></li>
+                    <li><a href="#">E-mail</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <!-- Rodapé com Link para Cadastro -->
-        <footer class="login-footer">
-            <p class="signup-link">
-                Ainda não tem uma conta? 
-                <a href="cadastro.html">Criar conta</a>
-            </p>
-        </footer>
-        
-    </div>
-    
-    <!-- JavaScript Principal -->
-    <script src="js/script.js"></script>
-    
+    </footer>
+
+    <script>
+        // Utilidades
+        const $ = (sel, el=document) => el.querySelector(sel);
+        const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+        // Ano no rodapé
+        $('#year').textContent = new Date().getFullYear();
+
+        // Menu mobile (abre em overlay simples)
+        const btnMenu = $('#btnMenu');
+        btnMenu?.addEventListener('click', () => {
+            const nav = document.createElement('div');
+            nav.style.position = 'fixed';
+            nav.style.inset = '0';
+            nav.style.backdropFilter = 'blur(12px)';
+            nav.style.background = 'rgba(9, 2, 26, 0.7)';
+            nav.style.zIndex = '2000';
+            nav.innerHTML = `
+                <div style="position:absolute; top:14px; right:14px">
+                    <button class="btn" id="closeMenu">Fechar</button>
+                </div>
+                <div style="display:grid; gap:14px; place-content:center; height:100%; text-align:center;">
+                    <a class="btn" href="#servicos">Serviços</a>
+                    <a class="btn" href="#profissionais">Profissionais</a>
+                    <a class="btn" href="#seguranca">Segurança</a>
+                    <a class="btn" href="#faq">FAQ</a>
+                </div>`;
+            document.body.appendChild(nav);
+            nav.addEventListener('click', (e) => {
+                if (e.target.id === 'closeMenu' || e.target === nav) nav.remove();
+            });
+        });
+
+        // Scroll suave
+        $$('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', (e) => {
+                const id = a.getAttribute('href');
+                if (!id || id === '#') return;
+                const el = $(id);
+                if (!el) return;
+                e.preventDefault();
+                window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72, behavior: 'smooth' });
+            });
+        });
+
+        // FAQ toggle
+        $$('.faq-item').forEach(item => {
+            const q = $('.faq-q', item);
+            const a = $('.faq-a', item);
+            q.addEventListener('click', () => {
+                const open = a.style.display === 'block';
+                a.style.display = open ? 'none' : 'block';
+                q.querySelector('span').textContent = open ? '+' : '−';
+            });
+        });
+
+        // CTA de orçamento (mock)
+        $('#btnOrcamento')?.addEventListener('click', () => {
+            const nome = $('#inputNome').value.trim();
+            const cidade = $('#inputCidade').value.trim();
+            const servico = $('#inputServico').value.trim();
+            const contato = $('#inputContato').value.trim();
+            if (!nome || !cidade || !servico || !contato) {
+                alert('Preencha todos os campos para receber seu orçamento.');
+                return;
+            }
+            alert(`Obrigado, ${nome}! Em breve enviaremos propostas de ${servico} para ${cidade}. Entraremos em contato em ${contato}.`);
+        });
+    </script>
 </body>
 </html>
