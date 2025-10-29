@@ -416,6 +416,16 @@
         // Ano no rodapé
         $('#year').textContent = new Date().getFullYear();
 
+        // Botão Quero contratar - redireciona para solicitação de orçamento
+        $('#btnCadastrar')?.addEventListener('click', () => {
+            window.location.href = 'solicitacao-orcamento.html';
+        });
+
+        // Botão Entrar - redireciona para cadastro
+        $('#btnLogin')?.addEventListener('click', () => {
+            window.location.href = '../cadastro.html';
+        });
+
         // Menu mobile (abre em overlay simples)
         const btnMenu = $('#btnMenu');
         btnMenu?.addEventListener('click', () => {

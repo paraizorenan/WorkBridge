@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Work Bridge • Busca de Profissionais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <style>
+      :root{
+        --wb-primary:#2563EB;
+        --wb-primary-600:#1D4ED8;
+        --wb-primary-50:#DBEAFE;
+        --wb-muted:#6B7280;
+        --wb-text:#111827;
+        --wb-bg:#F3F4F6;
+        --wb-card:#FFFFFF;
+        --wb-border:#E5E7EB;
+        --wb-yellow:#F59E0B;
+        --wb-shadow:0 10px 20px rgba(17,24,39,.05),0 2px 6px rgba(17,24,39,.06);
+      }
+      .container{ max-width:1200px; padding-left:20px; padding-right:20px; }
+      body{
+        font-family:'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        color:var(--wb-text);
+        background: radial-gradient(1200px 600px at 80% -10%, rgba(37,99,235,.08), transparent 60%),
+                    radial-gradient(1000px 600px at -10% 10%, rgba(29,78,216,.08), transparent 55%),
+                    var(--wb-bg);
+      }
+      /* Navbar fixa */
+      header{
+        position:sticky; top:0; z-index:50;
+        background:rgba(255,255,255,.9);
+        backdrop-filter:saturate(1.1) blur(8px);
+        border-bottom:1px solid var(--wb-border);
+        box-shadow:0 2px 8px rgba(17,24,39,.04);
+      }
+      .brand__logo{ width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, var(--wb-primary), #60A5FA); box-shadow:inset 0 0 0 2px rgba(255,255,255,.4), 0 6px 14px rgba(37,99,235,.25); }
+      .brand__name{ font-weight:700; letter-spacing:.2px; }
+
+      /* Título/Subtítulo área */
+      .wb-hero{ text-align:center; padding:48px 16px 20px; }
+      .wb-hero h1{ margin:0 0 8px 0; font-size:clamp(26px,3.2vw,36px); line-height:1.15; font-weight:800; letter-spacing:-.02em; }
+      .wb-hero p{ margin:0; color:var(--wb-muted); font-size:clamp(14px,2vw,18px); }
+      .wb-hero-icon{ display:inline-grid; place-items:center; width:44px; height:44px; border-radius:10px; margin-bottom:12px; background:linear-gradient(135deg, rgba(37,99,235,.10), rgba(37,99,235,.18)); color:var(--wb-primary); }
+
+      /* Card de filtros */
+      .filters{
+        background:linear-gradient(180deg, rgba(255,255,255,.95), #fff);
+        border:1px solid rgba(37,99,235,.12);
+        border-radius:16px;
+        box-shadow:0 8px 18px rgba(17,24,39,.05), 0 2px 6px rgba(17,24,39,.06);
+        padding:18px;
+        margin:18px 0 16px;
+        animation:fade-up .5s ease both;
+      }
+      .filters label{ color:var(--wb-muted); font-weight:500; }
+      input[type="text"], select{
+        border:1px solid var(--wb-border);
+        border-radius:12px; padding:12px 40px 12px 14px; background:#fff;
+        transition:border-color .2s ease, box-shadow .2s ease, transform .06s ease;
+        box-shadow:0 0 0 0 rgba(37,99,235,0);
+      }
+      input[type="text"]:focus, select:focus{ border-color:rgba(37,99,235,.6); box-shadow:0 0 0 4px rgba(37,99,235,.12); outline:0; }
+      .filters__row{ grid-template-columns: 1fr; }
+      .actions{ justify-content:flex-end; margin-top:8px; }
+
+      /* Ícones nos campos via pseudo-elemento */
+      #cidadeEstado{ position:relative; }
+      #cidadeEstado.wb-has-icon{ padding-left:40px; }
+      .wb-input-wrap{ position:relative; }
+      .wb-input-wrap svg{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--wb-primary); opacity:.8; }
+
+      /* Chips (especialidades) */
+      .chips{ gap:10px; }
+      .chip{
+        border-radius:999px; padding:9px 14px; border:1px solid var(--wb-border);
+        transition: background .2s ease, color .2s ease, border-color .2s ease, transform .06s ease;
+      }
+      .chip:hover{ background:var(--wb-primary-50); border-color:rgba(37,99,235,.35); color:var(--wb-primary); transform:translateY(-1px); }
+      .chip--active{ background:rgba(37,99,235,.08); border-color:rgba(37,99,235,.45); color:var(--wb-primary); }
+
+      /* Botões ações */
+      .btn{ border-radius:12px; padding:12px 16px; font-weight:600; box-shadow:0 6px 14px rgba(37,99,235,.18); transition: transform .12s ease, box-shadow .2s ease, background .2s ease; }
+      .btn:hover{ transform:translateY(-1px); box-shadow:0 10px 18px rgba(29,78,216,.22); }
+      .btn.btn--ghost{ color:var(--wb-text); border-color:var(--wb-border); box-shadow:none; }
+      #btnBuscar::before, #btnLimpar::before{ content:''; display:inline-block; width:16px; height:16px; margin-right:8px; vertical-align:-2px; background:currentColor; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center; -webkit-mask-size:16px; mask-repeat:no-repeat; mask-position:center; mask-size:16px; }
+      #btnBuscar::before{ -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23fff"><path d="M21 21l-4.35-4.35" stroke="%23fff" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="%23fff" stroke-width="2" fill="none"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 21l-4.35-4.35" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="white" stroke-width="2" fill="none"/></svg>'); }
+      #btnLimpar::before{ -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000"><path d="M18 6L6 18M6 6l12 12" stroke="%23000" stroke-width="2" stroke-linecap="round"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M18 6L6 18M6 6l12 12" stroke="black" stroke-width="2" stroke-linecap="round"/></svg>'); }
+
+      /* Resultados */
+      #resultadoCount{ color:var(--wb-muted); font-weight:600; text-align:center; margin:10px 0; }
+      .grid{ gap:18px; justify-items:stretch; }
+      .card{
+        border-radius:18px; border:1px solid var(--wb-border); overflow:hidden;
+        background:linear-gradient(180deg, rgba(255,255,255,.95), #fff);
+        box-shadow:0 8px 18px rgba(17,24,39,.05), 0 2px 6px rgba(17,24,39,.06);
+        padding:18px; display:grid; grid-template-columns: 96px 1fr; gap:16px; align-items:center;
+        transform:translateY(0); animation:fade-up .6s ease both; transition:transform .2s ease, box-shadow .25s ease, border-color .25s ease;
+      }
+      .card:hover{ transform:translateY(-5px); box-shadow:0 18px 30px rgba(17,24,39,.10), 0 10px 16px rgba(17,24,39,.08); border-color:rgba(37,99,235,.28); }
+      .card__photo, .profile-img{ width:90px; height:90px; border-radius:50%; object-fit:cover; object-position:center; box-shadow:0 4px 10px rgba(0,0,0,.08); margin-bottom:1rem; }
+      .card__title{ font-size:20px; }
+      .card__meta{ color:var(--wb-muted); margin-bottom:8px; }
+      .rating{ gap:8px; }
+      .stars{ color:var(--wb-yellow); font-size:16px; }
+      .rating small{ background:rgba(245, 158, 11, .12); color:#9A5B00; padding:2px 8px; border-radius:999px; font-weight:600; }
+      .card .btn{ padding:10px 14px; border-radius:12px; background:#007bff; }
+      .card .btn:hover{ background:#0056b3; }
+
+      /* Responsivo */
+      @media (min-width:640px){
+        .filters__row{ grid-template-columns: 2fr 1fr; }
+      }
+      @media (min-width:900px){
+        .filters{ display:grid; grid-template-columns: 2fr 1fr auto; column-gap:16px; align-items:end; }
+        .filters__row{ display:contents; }
+        .filters > div:nth-of-type(2){ grid-column:1 / -1; margin-top:10px; }
+        .actions{ margin-top:0; justify-self:end; align-self:end; }
+      }
+      @media (min-width:700px){ .wb-hero{ padding-top:80px; } }
+      @media (min-width:820px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
+      @media (min-width:1200px){ .grid{ grid-template-columns: repeat(3, 1fr); } .filters{ padding:20px; } }
+
+      /* Animations */
+      @keyframes fade-up{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container brand">
+        <div class="brand__logo" aria-hidden="true"></div>
+        <div class="brand__name">Work Bridge</div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="wb-hero">
+        <div class="wb-hero-icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Buscar">
+            <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h1>Buscar Profissionais</h1>
+        <p>Encontre pedreiros, eletricistas, encanadores e mais perto de você.</p>
+      </section>
+
+      <section class="filters" aria-label="Filtros de busca">
+        <div class="filters__row">
+          <div class="wb-input-wrap">
+            <label for="cidadeEstado">Cidade/Estado</label>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <input id="cidadeEstado" class="wb-has-icon" type="text" placeholder="Ex.: São Paulo/SP" />
+          </div>
+          <div>
+            <label for="ordenacao">Ordenar por</label>
+            <select id="ordenacao">
+              <option value="relevancia">Mais Relevante</option>
+              <option value="avaliacao">Melhor Avaliado</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label>Especialidades</label>
+          <div id="chipsEspecialidades" class="chips" role="group" aria-label="Filtros de especialidades">
+            <!-- preenchido via JS -->
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btnBuscar" class="btn" type="button">Buscar</button>
+          <button id="btnLimpar" class="btn btn--ghost" type="button">Limpar</button>
+        </div>
+      </section>
+
+      <section aria-live="polite" aria-busy="false">
+        <div id="resultadoCount" style="margin-bottom:10px; color:#6b7280;"></div>
+        <div id="listaResultados" class="grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">© Work Bridge</div>
+    </footer>
+
+    <script src="./js/busca.js" defer></script>
+  </body>
+  </html>
+
+
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Work Bridge • Perfil do Profissional</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="container brand">
+        <div class="brand__logo"></div>
+        <div class="brand__name">Work Bridge</div>
+      </div>
+    </header>
+
+    <main class="container profile">
+      <section id="profileHeader" class="profile__header" aria-live="polite" aria-busy="true">
+        <!-- preenchido via JS -->
+      </section>
+
+      <section class="profile__grid">
+        <div class="card--section">
+          <h2 class="section__title">Apresentação</h2>
+          <p id="descricao"></p>
+        </div>
+
+        <aside class="card--section">
+          <h2 class="section__title">Contato</h2>
+          <p style="color:#6b7280;">Futuro: informações de contato vindas da API.</p>
+          <button id="btnOrcamento" class="btn" type="button">Solicitar Orçamento</button>
+        </aside>
+      </section>
+
+      <section class="card--section">
+        <h2 class="section__title">Portfólio</h2>
+        <div id="portfolio" class="portfolio"></div>
+      </section>
+
+      <section class="card--section">
+        <h2 class="section__title">Avaliações</h2>
+        <div id="avaliacoes" class="reviews"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">© Work Bridge</div>
+    </footer>
+
+    <script src="./js/perfil.js" defer></script>
+  </body>
+  </html>
+
+
+
