@@ -464,6 +464,16 @@
             });
         });
 
+        // Navegar para página de cadastro ao clicar em "Entrar"
+        $('#btnLogin')?.addEventListener('click', () => {
+            window.location.href = 'cadastro.html';
+        });
+
+        // Navegar para solicitação de orçamento ao clicar em "Quero contratar"
+        $('#btnCadastrar')?.addEventListener('click', () => {
+            window.location.href = 'orcamento.html';
+        });
+
         // CTA de orçamento (mock)
         $('#btnOrcamento')?.addEventListener('click', () => {
             const nome = $('#inputNome').value.trim();

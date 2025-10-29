@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Orçamento - WorkBridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #0b0223; }
+        .container { width: min(960px, 92%); margin: 0 auto; }
+        .page { padding: 32px 0 48px; }
+        .card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+        .title { font-weight: 800; font-size: 28px; }
+        .subtitle { color: #4b5563; margin-top: 8px; }
+        .form { display: grid; gap: 14px; margin-top: 18px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .field { display: grid; gap: 8px; }
+        label { font-weight: 700; color: #111827; }
+        input[type="text"], input[type="date"], textarea { width: 100%; height: 48px; padding: 0 12px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; font-weight: 600; color: #111827; }
+        textarea { height: 140px; padding: 12px; resize: vertical; }
+        input[type="file"] { border: 1px dashed #d1d5db; padding: 12px; border-radius: 12px; background: #f9fafb; }
+        .helper { font-size: 12px; color: #6b7280; }
+        .actions { display: flex; gap: 12px; margin-top: 8px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 18px; border-radius: 14px; border: 1px solid #e5e7eb; background: #111827; color: #fff; font-weight: 800; cursor: pointer; }
+        .btn.secondary { background: #ffffff; color: #111827; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: #16a34a1a; color: #16a34a; border: 1px solid #22c55e33; font-weight: 700; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+        .logo { width: 28px; height: 28px; border-radius: 8px; background: conic-gradient(from 210deg at 50% 50%, #8a2be2, #b06fff, #22d3ee, #8a2be2); box-shadow: 0 6px 18px #8a2be233, inset 0 0 18px #ffffff22; }
+        .back { text-decoration: none; font-weight: 700; color: #4f46e5; }
+        @media (max-width: 720px) { .row { grid-template-columns: 1fr; } }
+    </style>
+    <script>
+        const $ = (sel, el=document) => el.querySelector(sel);
+        const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name) || '';
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const profFromQuery = getQueryParam('profissional');
+            if (profFromQuery) {
+                $('#profissional').value = profFromQuery;
+                $('#profissional').readOnly = true;
+            }
+            $('#formOrcamento').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const profissional = $('#profissional').value.trim();
+                const titulo = $('#titulo').value.trim();
+                const descricao = $('#descricao').value.trim();
+                const dataInicio = $('#dataInicio').value;
+                if (!profissional || !titulo || !descricao || !dataInicio) {
+                    alert('Preencha todos os campos obrigatórios.');
+                    return;
+                }
+                const arquivos = $('#midia').files ? Array.from($('#midia').files).map(f => ({ name: f.name, type: f.type, size: f.size })) : [];
+                const solicitacao = {
+                    id: 'sol-' + Date.now(),
+                    profissional,
+                    titulo,
+                    descricao,
+                    dataInicio,
+                    arquivos,
+                    criadaEm: new Date().toISOString(),
+                    status: 'enviada'
+                };
+                const key = 'workbridge_solicitacoes';
+                const existentes = JSON.parse(localStorage.getItem(key) || '[]');
+                existentes.push(solicitacao);
+                localStorage.setItem(key, JSON.stringify(existentes));
+                // Simula notificação ao profissional
+                const notifKey = 'workbridge_notificacoes_' + profissional.toLowerCase().replace(/\s+/g, '_');
+                const notificacoes = JSON.parse(localStorage.getItem(notifKey) || '[]');
+                notificacoes.push({
+                    id: 'ntf-' + Date.now(),
+                    tipo: 'nova_solicitacao',
+                    mensagem: `Você recebeu uma nova solicitação de orçamento: "${titulo}"`,
+                    lida: false,
+                    criadaEm: new Date().toISOString()
+                });
+                localStorage.setItem(notifKey, JSON.stringify(notificacoes));
+                alert('Solicitação enviada! O profissional foi notificado.');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+    <meta name="description" content="Solicitar orçamento a profissionais na WorkBridge">
+    <meta name="keywords" content="orçamento, construção civil, contratar, profissionais">
+    <meta name="author" content="WorkBridge">
+</head>
+<body>
+    <div class="page">
+        <div class="container">
+            <div class="header">
+                <div class="brand"><span class="logo"></span> <span>WorkBridge Obras</span></div>
+                <a class="back" href="index.html">Voltar</a>
+            </div>
+            <div class="card">
+                <div class="title">Solicitar Orçamento</div>
+                <div class="subtitle">Descreva o serviço que precisa para receber proposta de valor e prazo.</div>
+                <div class="badge" style="margin-top:12px">Para um profissional específico</div>
+                <form id="formOrcamento" class="form" novalidate>
+                    <div class="field">
+                        <label for="profissional">Profissional</label>
+                        <input id="profissional" name="profissional" type="text" placeholder="Ex.: João Silva" required>
+                        <div class="helper">Informe o nome do profissional alvo da solicitação.</div>
+                    </div>
+                    <div class="field">
+                        <label for="titulo">Título do serviço</label>
+                        <input id="titulo" name="titulo" type="text" placeholder="Ex.: Reforma de banheiro" required>
+                    </div>
+                    <div class="field">
+                        <label for="descricao">Descrição detalhada</label>
+                        <textarea id="descricao" name="descricao" placeholder="Descreva o escopo, medidas, materiais, acesso, particularidades..." required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="field">
+                            <label for="midia">Fotos/Vídeos do local (opcional)</label>
+                            <input id="midia" name="midia" type="file" accept="image/*,video/*" multiple>
+                            <div class="helper">Anexe referências, plantas ou imagens do local.</div>
+                        </div>
+                        <div class="field">
+                            <label for="dataInicio">Data desejada para início</label>
+                            <input id="dataInicio" name="dataInicio" type="date" required>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button type="submit" class="btn">Enviar solicitação</button>
+                        <a href="index.html" class="btn secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
