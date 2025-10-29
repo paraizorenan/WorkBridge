@@ -275,6 +275,65 @@ app.post('/api/usuarios', async (req, res) => {
     }
 });
 
+// Login de usuário
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, senha } = req.body;
+        
+        if (!email || !senha) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email e senha são obrigatórios'
+            });
+        }
+
+        // Buscar usuário por email
+        const result = await pool.query(`
+            SELECT u.id, u.nome_completo, u.tipo, u.email, u.telefone, u.cpf_cnpj,
+                   u.foto_url, u.senha_hash, c.nome as cidade_nome, uf.sigla as uf_sigla
+            FROM wb.usuario u
+            LEFT JOIN wb.cidade c ON u.cidade_id = c.id
+            LEFT JOIN wb.uf uf ON c.uf_sigla = uf.sigla
+            WHERE u.email = $1
+        `, [email.toLowerCase()]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: 'Email ou senha incorretos'
+            });
+        }
+
+        const usuario = result.rows[0];
+
+        // Verificar senha (implementação simples - em produção usar bcrypt)
+        // Por enquanto, compara senha em texto plano ou hash simples
+        if (usuario.senha_hash !== senha) {
+            return res.status(401).json({
+                success: false,
+                message: 'Email ou senha incorretos'
+            });
+        }
+
+        // Remover senha_hash da resposta
+        delete usuario.senha_hash;
+
+        res.json({
+            success: true,
+            data: usuario,
+            message: 'Login realizado com sucesso!'
+        });
+
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erro interno do servidor',
+            error: error.message
+        });
+    }
+});
+
 // Buscar usuário por ID
 app.get('/api/usuarios/:id', async (req, res) => {
     try {

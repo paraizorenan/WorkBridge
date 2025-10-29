@@ -17,6 +17,7 @@ const facebookSignupBtn = document.getElementById('facebookSignupBtn');
 
 // Elementos específicos do cadastro
 const fullNameInput = document.getElementById('fullName');
+const cpfCnpjInput = document.getElementById('cpfCnpj');
 const phoneInput = document.getElementById('phone');
 const confirmPasswordInput = document.getElementById('confirmPassword');
 const userTypeInputs = document.querySelectorAll('input[name="userType"]');
@@ -25,8 +26,9 @@ const acceptTermsInput = document.getElementById('acceptTerms');
 // ===== CONFIGURAÇÕES =====
 const CONFIG = {
     minPasswordLength: 8,
-    apiEndpoint: '/api/login', // Endpoint futuro do backend
-    signupEndpoint: '/api/signup', // Endpoint futuro do backend
+    apiBaseUrl: 'http://localhost:3000/api', // Base URL da API
+    apiEndpoint: 'http://localhost:3000/api/login', // Endpoint de login
+    signupEndpoint: 'http://localhost:3000/api/usuarios', // Endpoint de cadastro
     debugMode: true // Alterar para false em produção
 };
 
@@ -69,6 +71,81 @@ function isValidPhone(phone) {
 function isValidFullName(name) {
     const words = name.trim().split(/\s+/);
     return words.length >= 2 && words.every(word => word.length >= 2);
+}
+
+/**
+ * Valida CPF
+ * @param {string} cpf - CPF a ser validado
+ * @returns {boolean} - Retorna true se o CPF for válido
+ */
+function isValidCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+        sum += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
+    if (digit !== parseInt(cpf.charAt(9))) return false;
+    
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+        sum += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    digit = 11 - (sum % 11);
+    if (digit > 9) digit = 0;
+    return digit === parseInt(cpf.charAt(10));
+}
+
+/**
+ * Valida CNPJ
+ * @param {string} cnpj - CNPJ a ser validado
+ * @returns {boolean} - Retorna true se o CNPJ for válido
+ */
+function isValidCNPJ(cnpj) {
+    cnpj = cnpj.replace(/\D/g, '');
+    if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
+    
+    let length = cnpj.length - 2;
+    let numbers = cnpj.substring(0, length);
+    const digits = cnpj.substring(length);
+    let sum = 0;
+    let pos = length - 7;
+    
+    for (let i = length; i >= 1; i--) {
+        sum += numbers.charAt(length - i) * pos--;
+        if (pos < 2) pos = 9;
+    }
+    
+    let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    if (result !== parseInt(digits.charAt(0))) return false;
+    
+    length = length + 1;
+    numbers = cnpj.substring(0, length);
+    sum = 0;
+    pos = length - 7;
+    
+    for (let i = length; i >= 1; i--) {
+        sum += numbers.charAt(length - i) * pos--;
+        if (pos < 2) pos = 9;
+    }
+    
+    result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+    return result === parseInt(digits.charAt(1));
+}
+
+/**
+ * Valida CPF ou CNPJ
+ * @param {string} value - CPF/CNPJ a ser validado
+ * @returns {boolean} - Retorna true se for válido
+ */
+function isValidCpfCnpj(value) {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length === 11) return isValidCPF(numbers);
+    if (numbers.length === 14) return isValidCNPJ(numbers);
+    return false;
 }
 
 /**
@@ -206,6 +283,29 @@ function formatPhone(value) {
 }
 
 /**
+ * Formata CPF/CNPJ conforme o usuário digita
+ * @param {string} value - Valor do input
+ * @returns {string} - CPF/CNPJ formatado
+ */
+function formatCpfCnpj(value) {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 11) {
+        // Formata como CPF
+        if (numbers.length <= 3) return numbers;
+        if (numbers.length <= 6) return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
+        if (numbers.length <= 9) return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6)}`;
+        return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9, 11)}`;
+    } else {
+        // Formata como CNPJ
+        if (numbers.length <= 2) return numbers;
+        if (numbers.length <= 5) return `${numbers.slice(0, 2)}.${numbers.slice(2)}`;
+        if (numbers.length <= 8) return `${numbers.slice(0, 2)}.${numbers.slice(2, 5)}.${numbers.slice(5)}`;
+        if (numbers.length <= 12) return `${numbers.slice(0, 2)}.${numbers.slice(2, 5)}.${numbers.slice(5, 8)}/${numbers.slice(8)}`;
+        return `${numbers.slice(0, 2)}.${numbers.slice(2, 5)}.${numbers.slice(5, 8)}/${numbers.slice(8, 12)}-${numbers.slice(12, 14)}`;
+    }
+}
+
+/**
  * Alterna a visibilidade da senha
  * @param {string} inputId - ID do input de senha
  */
@@ -301,6 +401,27 @@ function validateFullName() {
 }
 
 /**
+ * Valida o campo de CPF/CNPJ
+ * @returns {boolean} - Retorna true se o CPF/CNPJ for válido
+ */
+function validateCpfCnpj() {
+    const cpfCnpj = cpfCnpjInput.value.trim();
+    
+    if (cpfCnpj === '') {
+        showError(cpfCnpjInput, 'Por favor, informe seu CPF ou CNPJ');
+        return false;
+    }
+    
+    if (!isValidCpfCnpj(cpfCnpj)) {
+        showError(cpfCnpjInput, 'Por favor, informe um CPF ou CNPJ válido');
+        return false;
+    }
+    
+    clearError(cpfCnpjInput);
+    return true;
+}
+
+/**
  * Valida o campo de telefone
  * @returns {boolean} - Retorna true se o telefone for válido
  */
@@ -391,6 +512,7 @@ function validateTerms() {
  */
 function validateSignupForm() {
     const isNameValid = validateFullName();
+    const isCpfCnpjValid = validateCpfCnpj();
     const isEmailValid = validateEmail();
     const isPhoneValid = validatePhone();
     const isPasswordValid = validatePassword();
@@ -398,8 +520,8 @@ function validateSignupForm() {
     const isUserTypeValid = validateUserType();
     const isTermsValid = validateTerms();
     
-    return isNameValid && isEmailValid && isPhoneValid && isPasswordValid && 
-           isConfirmPasswordValid && isUserTypeValid && isTermsValid;
+    return isNameValid && isCpfCnpjValid && isEmailValid && isPhoneValid && 
+           isPasswordValid && isConfirmPasswordValid && isUserTypeValid && isTermsValid;
 }
 
 // ===== FUNÇÕES DE LOGIN =====
@@ -432,32 +554,44 @@ async function handleLogin(event) {
     setButtonLoading(true);
     
     try {
-        // Simula chamada à API (substituir por chamada real ao backend)
-        const response = await simulateApiCall(email, password);
+        // Chamada real à API de login
+        const response = await fetch(CONFIG.apiEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                email: email, 
+                senha: password 
+            })
+        });
         
-        if (response.success) {
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
             console.log('✅ Login realizado com sucesso!');
-            console.log('Token:', response.token);
-            console.log('Usuário:', response.user);
+            console.log('Usuário:', data.data);
             
-            // Aqui você pode:
-            // 1. Salvar o token no localStorage
-            // localStorage.setItem('authToken', response.token);
+            // Salvar dados do usuário no localStorage
+            localStorage.setItem('workbridge_user', JSON.stringify(data.data));
             
-            // 2. Redirecionar para o dashboard
-            // window.location.href = '/dashboard.html';
+            // Exibir mensagem de sucesso
+            alert(`Login realizado com sucesso!\n\nBem-vindo(a), ${data.data.nome_completo}! 🎉`);
             
-            // 3. Exibir mensagem de sucesso
-            alert('Login realizado com sucesso! Bem-vindo ao Work Bridge 🎉');
+            // Redirecionar para a landing page (futuramente será dashboard)
+            window.location.href = 'public/index.html';
             
         } else {
             // Exibe erro retornado pela API
-            showError(emailInput, response.message || 'E-mail ou senha incorretos');
+            showError(emailInput, data.message || 'E-mail ou senha incorretos');
+            if (data.message) {
+                showError(passwordInput, ''); // Marca o campo de senha como erro também
+            }
         }
         
     } catch (error) {
         console.error('❌ Erro ao fazer login:', error);
-        alert('Erro ao conectar com o servidor. Tente novamente mais tarde.');
+        alert('Erro ao conectar com o servidor. Verifique se o backend está rodando (npm start).');
         
     } finally {
         // Desativa estado de carregamento
@@ -540,24 +674,31 @@ async function handleSignup(event) {
     }
     
     // Obtém os valores dos campos
+    const userType = document.querySelector('input[name="userType"]:checked').value;
+    const cpfCnpj = cpfCnpjInput.value.replace(/\D/g, ''); // Remove formatação
+    const telefone = phoneInput.value.replace(/\D/g, ''); // Remove formatação
+    
     const formData = {
-        fullName: fullNameInput.value.trim(),
-        email: emailInput.value.trim(),
-        phone: phoneInput.value.trim(),
-        password: passwordInput.value,
-        userType: document.querySelector('input[name="userType"]:checked').value,
-        acceptTerms: acceptTermsInput.checked
+        nome_completo: fullNameInput.value.trim(),
+        tipo: userType.toUpperCase(),
+        cpf_cnpj: cpfCnpj,
+        email: emailInput.value.trim().toLowerCase(),
+        telefone: telefone,
+        senha_hash: passwordInput.value, // Em produção, usar bcrypt no backend
+        aceitou_termos_em: acceptTermsInput.checked ? new Date().toISOString() : null,
+        aceitou_privacidade_em: acceptTermsInput.checked ? new Date().toISOString() : null
     };
     
     // Debug: Exibe os dados no console (remover em produção)
     if (CONFIG.debugMode) {
         console.log('=== TENTATIVA DE CADASTRO ===');
-        console.log('Nome:', formData.fullName);
+        console.log('Nome:', formData.nome_completo);
+        console.log('Tipo:', formData.tipo);
+        console.log('CPF/CNPJ:', formData.cpf_cnpj);
         console.log('E-mail:', formData.email);
-        console.log('Telefone:', formData.phone);
-        console.log('Tipo:', formData.userType);
-        console.log('Senha:', '*'.repeat(formData.password.length));
-        console.log('Termos aceitos:', formData.acceptTerms);
+        console.log('Telefone:', formData.telefone);
+        console.log('Senha:', '*'.repeat(passwordInput.value.length));
+        console.log('Termos aceitos:', acceptTermsInput.checked);
         console.log('Timestamp:', new Date().toISOString());
     }
     
@@ -565,31 +706,46 @@ async function handleSignup(event) {
     setSignupButtonLoading(true);
     
     try {
-        // Simula chamada à API (substituir por chamada real ao backend)
-        const response = await simulateSignupApiCall(formData);
+        // Chamada real à API de cadastro
+        const response = await fetch(CONFIG.signupEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
         
-        if (response.success) {
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
             console.log('✅ Cadastro realizado com sucesso!');
-            console.log('Usuário criado:', response.user);
+            console.log('Usuário criado:', data.data);
             
-            // Aqui você pode:
-            // 1. Redirecionar para a página de login
-            // window.location.href = '/index.html?signup=success';
+            // Exibir mensagem de sucesso
+            alert(`Cadastro realizado com sucesso!\n\nBem-vindo(a) ao Work Bridge, ${data.data.nome_completo}! 🎉\n\nVocê será redirecionado para a página de login.`);
             
-            // 2. Exibir mensagem de sucesso
-            alert('Cadastro realizado com sucesso! Bem-vindo ao Work Bridge 🎉\n\nVocê pode fazer login agora.');
-            
-            // 3. Redirecionar para login
-            window.location.href = 'index.html';
+            // Redirecionar para login após 1 segundo
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1000);
             
         } else {
             // Exibe erro retornado pela API
-            showError(emailInput, response.message || 'Erro ao criar conta. Tente novamente.');
+            const errorMessage = data.message || 'Erro ao criar conta. Tente novamente.';
+            
+            // Se o erro for relacionado a email/CPF duplicado, mostra no campo correto
+            if (errorMessage.toLowerCase().includes('email')) {
+                showError(emailInput, errorMessage);
+            } else if (errorMessage.toLowerCase().includes('cpf') || errorMessage.toLowerCase().includes('cnpj')) {
+                showError(cpfCnpjInput, errorMessage);
+            } else {
+                alert(errorMessage);
+            }
         }
         
     } catch (error) {
         console.error('❌ Erro ao fazer cadastro:', error);
-        alert('Erro ao conectar com o servidor. Tente novamente mais tarde.');
+        alert('Erro ao conectar com o servidor. Verifique se o backend está rodando (npm start).');
         
     } finally {
         // Desativa estado de carregamento
@@ -703,6 +859,20 @@ if (fullNameInput) {
     fullNameInput.addEventListener('input', () => {
         if (fullNameInput.classList.contains('error')) {
             clearError(fullNameInput);
+        }
+    });
+}
+
+if (cpfCnpjInput) {
+    cpfCnpjInput.addEventListener('blur', validateCpfCnpj);
+    cpfCnpjInput.addEventListener('input', (e) => {
+        if (cpfCnpjInput.classList.contains('error')) {
+            clearError(cpfCnpjInput);
+        }
+        // Formata o CPF/CNPJ automaticamente
+        const formatted = formatCpfCnpj(e.target.value);
+        if (formatted !== e.target.value) {
+            e.target.value = formatted;
         }
     });
 }
