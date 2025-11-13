@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Work Bridge - Faça login na plataforma que conecta contratantes e profissionais da construção civil">
+    <meta name="keywords" content="construção civil, profissionais, contratação, trabalho, login">
+    <meta name="author" content="Work Bridge">
+    
+    <title>Login - Work Bridge | Conectando talentos e oportunidades</title>
+    
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Favicon (opcional - adicionar depois) -->
+    <!-- <link rel="icon" type="image/png" href="assets/favicon.png"> -->
+</head>
+<body>
+    
+    <!-- Container Principal do Login -->
+    <div class="login-container">
+        
+        <!-- Cabeçalho com Logo -->
+        <header class="login-header">
+            <div class="logo">
+                <i class="fas fa-hard-hat logo-icon"></i>
+                <h1>Work Bridge</h1>
+            </div>
+            <p class="logo-subtitle">Bem-vindo de volta!</p>
+        </header>
+        
+        <!-- Formulário de Login -->
+        <form id="loginForm" class="login-form" novalidate>
+            
+            <!-- E-mail -->
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-control" 
+                        placeholder="seu@email.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+                <span class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span class="error-text"></span>
+                </span>
+            </div>
+            
+            <!-- Senha -->
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-control" 
+                        placeholder="Digite sua senha"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <span class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span class="error-text"></span>
+                </span>
+            </div>
+            
+            <!-- Opções do Formulário -->
+            <div class="form-options">
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <label for="rememberMe">Lembrar de mim</label>
+                </div>
+                <a href="#" class="forgot-password">Esqueceu a senha?</a>
+            </div>
+            
+            <!-- Botão de Login -->
+            <button type="submit" id="loginBtn" class="btn btn-primary">
+                <span class="btn-spinner"></span>
+                <span class="btn-text">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Entrar
+                </span>
+            </button>
+            
+        </form>
+        
+        <!-- Divisor -->
+        <div class="divider">
+            <span>ou continue com</span>
+        </div>
+        
+        <!-- Login Social -->
+        <div class="social-login">
+            <button type="button" id="googleLoginBtn" class="btn-social btn-google">
+                <i class="fab fa-google"></i>
+                <span>Google</span>
+            </button>
+            <button type="button" id="facebookLoginBtn" class="btn-social btn-facebook">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </button>
+        </div>
+        
+        <!-- Rodapé com Link para Cadastro -->
+        <footer class="login-footer">
+            <p class="signup-link">
+                Não tem uma conta? 
+                <a href="cadastro.html">Criar conta</a>
+            </p>
+        </footer>
+        
+    </div>
+    
+    <!-- JavaScript Principal -->
+    <script src="js/script.js"></script>
+    
+    <script>
+        // ===== VALIDAÇÃO DO FORMULÁRIO DE LOGIN =====
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        // Função para validar e-mail
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+        
+        // Função para exibir erro
+        function showError(input, message) {
+            const formGroup = input.closest('.form-group');
+            const errorMessage = formGroup.querySelector('.error-message');
+            const errorText = errorMessage.querySelector('.error-text');
+            
+            input.classList.add('error');
+            errorText.textContent = message;
+            errorMessage.classList.add('show');
+            
+            // Animação de shake
+            input.classList.add('shake');
+            setTimeout(() => input.classList.remove('shake'), 300);
+        }
+        
+        // Função para limpar erro
+        function clearError(input) {
+            const formGroup = input.closest('.form-group');
+            const errorMessage = formGroup.querySelector('.error-message');
+            
+            input.classList.remove('error');
+            errorMessage.classList.remove('show');
+        }
+        
+        // Validação em tempo real
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        
+        emailInput.addEventListener('input', function() {
+            if (this.value) {
+                clearError(this);
+            }
+        });
+        
+        passwordInput.addEventListener('input', function() {
+            if (this.value) {
+                clearError(this);
+            }
+        });
+        
+        // Submit do formulário
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Validar e-mail
+            const email = emailInput.value.trim();
+            if (!email) {
+                showError(emailInput, 'Por favor, informe seu e-mail');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError(emailInput, 'Por favor, informe um e-mail válido');
+                isValid = false;
+            } else {
+                clearError(emailInput);
+            }
+            
+            // Validar senha
+            const password = passwordInput.value;
+            if (!password) {
+                showError(passwordInput, 'Por favor, informe sua senha');
+                isValid = false;
+            } else {
+                clearError(passwordInput);
+            }
+            
+            // Se válido, simular login
+            if (isValid) {
+                // Adicionar estado de carregamento
+                loginBtn.classList.add('loading');
+                loginBtn.disabled = true;
+                
+                // Simular requisição (remover em produção)
+                setTimeout(() => {
+                    loginBtn.classList.remove('loading');
+                    loginBtn.disabled = false;
+                    
+                    // Feedback de sucesso
+                    alert('Login realizado com sucesso!\n\nEm produção, você seria redirecionado para o dashboard.');
+                    
+                    // Em produção, redirecionar para dashboard
+                    // window.location.href = 'dashboard.html';
+                }, 1500);
+            }
+        });
+        
+        // Função para toggle de senha (caso não esteja no script.js)
+        if (typeof togglePassword === 'undefined') {
+            function togglePassword(inputId) {
+                const input = document.getElementById(inputId);
+                const button = input.parentElement.querySelector('.password-toggle');
+                const icon = button.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+        }
+        
+        // Login Social (simulação)
+        document.getElementById('googleLoginBtn').addEventListener('click', function() {
+            alert('Login com Google\n\nEm produção, isso iniciaria o fluxo OAuth do Google.');
+        });
+        
+        document.getElementById('facebookLoginBtn').addEventListener('click', function() {
+            alert('Login com Facebook\n\nEm produção, isso iniciaria o fluxo OAuth do Facebook.');
+        });
+    </script>
+    
+</body>
+</html>
+

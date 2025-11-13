@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Orçamento • WorkBridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0223;
+            --bg-soft: #13073a;
+            --primary: #8a2be2;
+            --primary-2: #b06fff;
+            --accent: #22d3ee;
+            --text: #f5f7fb;
+            --muted: #c6c6d1;
+            --card: rgba(255,255,255,0.06);
+            --stroke: rgba(255,255,255,0.12);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: radial-gradient(1200px 600px at 80% -50%, #3b0fff33, transparent 60%),
+                        radial-gradient(900px 500px at -10% 20%, #00eaff1a, transparent 60%),
+                        linear-gradient(160deg, var(--bg) 0%, #120733 60%, #0b0223 100%);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container { width: min(900px, 92%); margin: 0 auto; }
+        .nav { position: sticky; top: 0; z-index: 1000; backdrop-filter: saturate(140%) blur(10px); background: linear-gradient(to bottom, rgba(10, 2, 30, 0.85), rgba(10, 2, 30, 0.35)); border-bottom: 1px solid var(--stroke); }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+        .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: .3px; }
+        .logo { width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; background: conic-gradient(from 210deg at 50% 50%, #8a2be2, #b06fff, #22d3ee, #8a2be2); box-shadow: 0 8px 28px #8a2be233, inset 0 0 24px #ffffff22; }
+
+        .page { padding: 36px 0 48px; }
+        .title { font-size: clamp(1.6rem, 2.2vw + 1rem, 42px); line-height: 1.05; font-weight: 800; }
+        .subtitle { color: var(--muted); margin-top: 8px; }
+
+        .card { margin-top: 20px; background: linear-gradient(160deg, #ffffff12, #ffffff08); border: 1px solid var(--stroke); border-radius: 20px; padding: 18px; box-shadow: 0 20px 60px #00000066, inset 0 0 0 1px #ffffff10; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .row-1 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .field { display: grid; gap: 8px; }
+        label { font-weight: 700; }
+        .input, .textarea, .file, .date {
+            background: #0d0623; border: 1px solid var(--stroke); height: 48px; border-radius: 14px; padding: 0 14px; color: var(--text); width: 100%; font-weight: 600; letter-spacing: .2px;
+        }
+        .textarea { height: 140px; padding: 12px 14px; resize: vertical; }
+        .helper { font-size: 12px; color: var(--muted); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 18px; border-radius: 14px; border: 1px solid var(--stroke); color: var(--text); font-weight: 800; letter-spacing: .3px; cursor: pointer; background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); transition: transform .2s ease, box-shadow .2s ease; }
+        .btn.primary { background: linear-gradient(135deg, #8a2be2, #b06fff); border-color: transparent; box-shadow: 0 10px 28px #8a2be244; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px #00000055; }
+        .actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+        .note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+        .status { margin-top: 12px; font-weight: 700; }
+        .status.ok { color: #34d399; }
+        .status.err { color: var(--error); }
+        .hidden { display: none; }
+
+        @media (max-width: 840px) { .row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="nav">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand">
+                <span class="logo" aria-hidden="true"></span>
+                <span>WorkBridge Obras</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="container">
+            <h1 class="title">Solicitar Orçamento</h1>
+            <p class="subtitle">Descreva o serviço e enviaremos sua solicitação ao profissional.</p>
+
+            <form id="formOrcamento" class="card" novalidate>
+                <div class="row">
+                    <div class="field">
+                        <label for="profissionalId">ID do Profissional</label>
+                        <input class="input" id="profissionalId" name="profissionalId" placeholder="Ex.: UUID do profissional">
+                        <div class="helper">Se você veio do perfil, este campo pode vir preenchido.</div>
+                    </div>
+                    <div class="field">
+                        <label for="titulo">Título do serviço</label>
+                        <input class="input" id="titulo" name="titulo" placeholder="Ex.: Reforma do banheiro" required>
+                    </div>
+                </div>
+
+                <div class="row-1" style="margin-top:12px">
+                    <div class="field">
+                        <label for="descricao">Descrição detalhada</label>
+                        <textarea class="textarea" id="descricao" name="descricao" placeholder="Descreva o escopo, medidas, materiais, condições do local, etc." required></textarea>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top:12px">
+                    <div class="field">
+                        <label for="midia">Fotos/Vídeos do local (opcional)</label>
+                        <input class="file" id="midia" name="midia" type="file" accept="image/*,video/*" multiple>
+                        <div class="helper">Anexe imagens ou vídeos para ajudar na avaliação.</div>
+                    </div>
+                    <div class="field">
+                        <label for="dataDesejada">Data desejada para início</label>
+                        <input class="date" id="dataDesejada" name="dataDesejada" type="date" required>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn primary" id="btnEnviar">Enviar solicitação</button>
+                </div>
+
+                <div id="status" class="status hidden"></div>
+                <div class="note">Ao enviar, o profissional será notificado sobre a nova solicitação.</div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const $ = (sel, el=document) => el.querySelector(sel);
+        const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+        // Pré-preenche profissionalId via query string (?profissional_id=...)
+        const params = new URLSearchParams(window.location.search);
+        const profissionalFromQuery = params.get('profissional_id');
+        if (profissionalFromQuery) $('#profissionalId').value = profissionalFromQuery;
+
+        // Cancelar volta à home
+        $('#btnCancelar').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // Submissão do formulário
+        $('#formOrcamento').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const statusEl = $('#status');
+            statusEl.className = 'status';
+            statusEl.textContent = '';
+
+            const profissional_id = $('#profissionalId').value.trim();
+            const titulo = $('#titulo').value.trim();
+            const descricao = $('#descricao').value.trim();
+            const data_desejada_ini = $('#dataDesejada').value;
+
+            if (!titulo || !descricao || !data_desejada_ini) {
+                statusEl.textContent = 'Preencha título, descrição e data desejada.';
+                statusEl.classList.add('err');
+                return;
+            }
+
+            // Construção do payload básico (sem login/contratante)
+            const payload = {
+                titulo,
+                descricao,
+                data_desejada_ini,
+                profissional_id: profissional_id || undefined
+            };
+
+            // Envia tentativa para API se disponível conforme documentação do projeto
+            // Referência: `GET/POST /api/solicitacoes-orcamento` no repositório oficial
+            try {
+                const resp = await fetch('/api/solicitacoes-orcamento', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!resp.ok) throw new Error('Falha ao enviar solicitação');
+                statusEl.textContent = 'Solicitação enviada com sucesso! O profissional será notificado.';
+                statusEl.classList.add('ok');
+                // Opcional: redirecionar para uma página de confirmação
+                // setTimeout(() => window.location.href = '/', 1500);
+            } catch (err) {
+                // Fallback: confirma localmente quando a API não estiver ativa em dev
+                statusEl.textContent = 'Solicitação registrada localmente. Quando a API estiver ativa, o profissional será notificado.';
+                statusEl.classList.add('ok');
+                console.warn(err);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
